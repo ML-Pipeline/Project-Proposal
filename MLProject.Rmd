@@ -1,0 +1,61 @@
+---
+title: "MLProject"
+author: "Prakhar Mishra, Malvika Singh, Simran Handa"
+date: "11/18/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+#reading the files in
+s2_addresses = read.table("s2_addresses.txt", 
+               sep=",", 
+               col.names=c("sender_address","transaction_ID"), 
+               fill=FALSE, 
+               strip.white=TRUE)
+
+s2_addresses <- s2_addresses[-c(1), ]
+
+s3_user_grouping =read.table("s3_user_grouping.txt", 
+               sep=",", 
+               col.names=c("addressID","user_ID"), 
+               fill=FALSE, 
+               strip.white=TRUE)
+
+s3_user_grouping <- s3_user_grouping[-c(1), ]
+
+s4_accepted_pairings =read.table("s4_accepted_pairings.txt", 
+               sep=",", 
+               col.names=c("userID","ip_address","","probability"), 
+               fill=FALSE, 
+               strip.white=TRUE)
+
+s4_accepted_pairings <- s4_accepted_pairings[-c(1), ]
+
+s5_identified_transactions=read.table(
+                          "s5_identified_transactions.txt", 
+                          sep=",", 
+                          col.names=c("sender_userID",
+                          "receiver_userID","value",
+                          "timestamp"),
+                          fill=FALSE, 
+                          strip.white=TRUE)
+
+s5_identified_transactions <- s5_identified_transactions[-c(1), ]
+
+s1_recorded_data=read.table(
+                          "s1_recorded_data.txt", 
+                          sep=",", 
+                          col.names=c("sender_IP",
+                          "timestamp","transaction_ID",
+                          "monitoring_client_IP"),
+                          fill=FALSE, 
+                          strip.white=TRUE)
+
+```
+
