@@ -211,3 +211,103 @@ class(ldat$status)
 
 ```
 
+
+```{r}
+library(Matrix)
+library(xgboost)
+#Splitting into train and test set
+
+## 75% of the sample size
+smp_size <- floor(0.75 * nrow(bitcoins))
+
+## set the seed to make partition reproducible
+set.seed(123)
+train_ind <- sample(seq_len(nrow(bitcoins)), size = smp_size)
+
+train <- bitcoins[train_ind, ]
+test <- bitcoins[-train_ind, ]
+
+label <- train$Weighted.Price
+
+#Returns object unchanged if there are NA values
+previous_na_action<- options('na.action')
+options(na.action='na.pass')
+
+#Build matrix input for the model
+trainMatrix <- sparse.model.matrix(Weighted.Price ~ Volume..BTC. + Volume..Currency.
+                                   + YearMonth +Model_price +Competition 
+                                   , data = train
+                                   #, contrasts.arg = c('Competition')
+                                   , sparse = FALSE, sci = FALSE)
+
+options(na.action = previous_na_action$na.action)
+
+#Creating input for xgboost
+trainDMatrix <- xgb.DMatrix(data = trainMatrix, label = label)
+
+#Setting parameters of model
+params <- list(booster = "gbtree"
+               , objective = "reg:linear"
+               , eta=0.4
+               , gamma=0
+               )
+
+#Cross-validation
+xgb.tab <- xgb.cv(data = trainDMatrix
+                  , param = params
+                  , maximize = FALSE, evaluation = "rmse", nrounds = 100
+                  , nthreads = 10, nfold = 2, early_stopping_round = 10)
+```
+
+```{r}
+library(data.table)
+library(dplyr)
+library(padr)
+library(xgboost)
+library(Matrix)
+library(RcppRoll)
+library(zoo)
+library(Ckmeans.1d.dp)
+
+#Building the model to predict the weighted price
+
+#Number of rounds
+num_iterations = xgb.tab$best_iteration
+
+model <- xgb.train(data = trainDMatrix
+                               , param = params
+                               , maximize = FALSE, evaluation = 'rmse' 
+                               , nrounds= num_iterations)
+
+importance <- xgb.importance(feature_names = colnames(trainMatrix), model = model)
+importance_2 <- importance[1:10,]
+xgb.ggplot.importance(importance_matrix = importance_2)
+
+```
+
+
+```{r}
+
+#Returns object unchanged if there are NA values
+previous_na_action<- options('na.action')
+options(na.action='na.pass')
+
+#Build matrix input for the model
+testMatrix <- sparse.model.matrix(Weighted.Price~ Volume..BTC. + Volume..Currency.
+                                   + YearMonth +Model_price +Competition 
+                                   , data = test
+                                   #, contrasts.arg = c('Competition')
+                                   , sparse = FALSE, sci = FALSE)
+
+options(na.action = previous_na_action$na.action)
+
+#Predict values for a given day
+pred <- predict(model, testMatrix)
+
+```
+
+
+```{r}
+
+```
+
