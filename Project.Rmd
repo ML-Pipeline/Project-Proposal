@@ -8,6 +8,8 @@ output: html_document
 ```{r}
 library(ggplot2)
 library(gridExtra)
+library(survival)
+library(dplyr)
 ```
 
 
@@ -97,8 +99,16 @@ Trns.Qua.BTC
 
 
 ```{r}
+bitcoins$Model_price[bitcoins$Year=='2011'] <- '32'
+bitcoins$Model_price[bitcoins$Year=='2012'] <- '65'
 
+bitcoins$Model_price[bitcoins$YearMonth == '2013-01']<-'68.00'
+bitcoins$Model_price[bitcoins$YearMonth == '2013-02']<-'68.00'
+bitcoins$Model_price[bitcoins$YearMonth == '2013-03']<-'68.00'
+bitcoins$Model_price[bitcoins$YearMonth == '2013-04']<-'68.00'
+bitcoins$Model_price[bitcoins$YearMonth == '2013-05']<-'68.00'
 bitcoins$Model_price[bitcoins$YearMonth == '2013-06']<-'68.73'
+bitcoins$Model_price[bitcoins$YearMonth == '2013-07']<-'79.83'
 bitcoins$Model_price[bitcoins$YearMonth == '2013-08']<-'96.36'
 bitcoins$Model_price[bitcoins$YearMonth == '2013-09']<-'126.01'
 bitcoins$Model_price[bitcoins$YearMonth == '2013-10']<-'199.575'
@@ -159,6 +169,7 @@ bitcoins$Model_price[bitcoins$YearMonth == '2017-12']<-'5579.17'
 
 
 ```{r}
+#Number of cryptocurrency competitors that bitocoin had by year
 bitcoins$Competition[bitcoins$Year == "2011"] <- "4"
 bitcoins$Competition[bitcoins$Year == "2012"] <- "6"
 bitcoins$Competition[bitcoins$Year == "2013"] <- "66"
@@ -166,5 +177,35 @@ bitcoins$Competition[bitcoins$Year == "2014"] <- "506"
 bitcoins$Competition[bitcoins$Year == "2015"] <- "562"
 bitcoins$Competition[bitcoins$Year == "2016"] <- "644"
 bitcoins$Competition[bitcoins$Year == "2017"] <- "1335"
+
+```
+
+
+```{r}
+#Calculating the ratio of the market price and the weighted price
+bitcoins$PriceRatio <- as.numeric(bitcoins$Weighted.Price)/as.numeric(bitcoins$Model_price)
+
+
+```
+
+
+```{r}
+#Survival Analysis
+
+model= Surv(as.numeric(bitcoins$Year), as.numeric(bitcoins$Open))
+survfit(model , data=bitcoins) %>% plot(mark.time=T, xlab="Years", ylab="p(survive)")
+survfit(model , data=bitcoins) %>% summary()
+
+
+
+# real data
+ldat = bitcoins %>% tbl_df()
+ldat
+km = Surv(as.numeric(ldat$time), as.numeric(ldat$Competition)) %>%
+  (function(x) survfit(x ~ 1, data=ldat))(.)
+# Kaplan-Meier curve
+plot(km, xlab= D)
+class(ldat$status)
+
 ```
 
