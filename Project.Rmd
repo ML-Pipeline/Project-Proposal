@@ -185,6 +185,8 @@ bitcoins$Competition[bitcoins$Year == "2017"] <- "1335"
 #Calculating the ratio of the market price and the weighted price
 bitcoins$PriceRatio <- as.numeric(bitcoins$Weighted.Price)/as.numeric(bitcoins$Model_price)
 
+#Add a column that puts in the status for the hazard
+bitcoins$Status <- ifelse(bitcoins$PriceRatio >= 1, 1, 0)
 
 ```
 
