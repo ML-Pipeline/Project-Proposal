@@ -28,4 +28,4 @@ If running using Google CoLab, go to File -> Open Notebook -> Provide path where
 Once opened in Google Coab, specify the directory for the data and the code is ready to be implemented.
 
 Step 4:
-Download the data2.csv file provided in this github repo and specify the path according to your loacl machine before running the code.
+Download the data file available at  https://www.kaggle.com/mczielinski/bitcoin-historical-data/version/1#_=  and specify the path according to your loacl machine before running the code.
