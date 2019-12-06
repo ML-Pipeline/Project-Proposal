@@ -1,4 +1,4 @@
-# 94-845 Applied ML Project Proposal
+# 94-845 Applied ML Project Implementation
 Classification and Time Series Analysis of Bitcoin Users
 Project by: Prakhar Mishra, Simran Handa and Malvika Singh
 
