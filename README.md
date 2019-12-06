@@ -7,6 +7,7 @@ We have used dataset available at https://www.kaggle.com/mczielinski/bitcoin-his
 
 This is our primary dataset. We have added columns like Modeled Price and Number of competing currencies in this primary dataset which help us in predicting the time-series forecast model.
 To run the python notebook, follow the follwing steps:
+
 Step 1: 
 Download the file on your local machine. Ensure that the local machine meets the following specifications:
 Hardware:
